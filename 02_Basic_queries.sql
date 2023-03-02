@@ -53,7 +53,6 @@ ORDER BY 2 DESC;
 
 -- Covid_vaccinations database
 
-
 -- Showing the number of total tests, and fully vaccinated people in each country, in order of their above 65 years old population
 SELECT cov.location, sum(cov.new_tests) as 'Total_tests', max(cov.people_fully_vaccinated) as 'People_fully_vaccinated', 
 max(cov.aged_65_older) as 'Above_65_population' 
@@ -75,3 +74,51 @@ FROM project_portfolio.covid_vaccinations as cov
 WHERE continent is not NULL
 GROUP by cov.location
 ORDER BY 2 DESC;
+
+
+-- Joined Database
+
+-- Joining the two tables
+SELECT *
+FROM project_portfolio.covid_deaths dea
+JOIN project_portfolio.covid_vaccinations vac
+ON dea.location = vac.location and dea.date = vac.date;
+
+-- Looking at the vaccination rate and the death rate for each country
+SELECT dea.location, max(vac.total_vaccinations)/max(dea.population) as 'Vaccination_rate', 
+max(dea.total_deaths)/max(dea.total_cases) as 'Death_rate'
+FROM project_portfolio.covid_deaths as dea
+JOIN project_portfolio.covid_vaccinations as vac
+	ON dea.location = vac.location and dea.date = vac.date
+Where dea.continent is not NULL
+GROUP BY dea.location
+ORDER BY 3 DESC; 
+
+-- Checking what percentage of each country is fully vaccinated, partly vaccinated and also the vaccination rate
+SELECT dea.location, max(vac.people_fully_vaccinated)/max(dea.population)*100 as 'Fully_Vaccinated',
+max(vac.people_vaccinated)/max(dea.population)*100 as 'Partly_Vaccinated',
+max(vac.total_vaccinations)/max(dea.population)*100 as 'Vaccination_rate'
+FROM project_portfolio.covid_deaths as dea
+JOIN project_portfolio.covid_vaccinations as vac
+	ON dea.location = vac.location and dea.date = vac.date
+Where dea.continent is not NULL
+GROUP BY dea.location
+ORDER BY 4 DESC; 
+
+-- Looking at new vaccinations and total_Vaccinations
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations, 
+SUM(vac.new_vaccinations) OVER(PARTITION by dea.location) as 'total_vaccinations'
+FROM project_portfolio.covid_deaths as dea
+JOIN project_portfolio.covid_vaccinations as vac
+	ON dea.location = vac.location and dea.date = vac.date
+Where dea.continent is not NULL
+ORDER BY 6 DESC,3; 
+
+-- find the date of the first vaccination
+SELECT dea.location, min(dea.date) as date
+FROM project_portfolio.covid_deaths as dea
+JOIN project_portfolio.covid_vaccinations as vac
+	ON dea.location = vac.location and dea.date = vac.date
+WHERE vac.new_vaccinations IS NOT NULL and dea.continent is not NULL
+GROUP BY dea.location
+ORDER BY 2;
