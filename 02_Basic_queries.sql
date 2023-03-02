@@ -5,26 +5,25 @@ SELECT location, date, total_cases, new_cases, total_deaths, population
 From project_portfolio.covid_deaths
 ORDER BY 1,2;
 
--- Shows likelihood of dying if you contract with covid in Hungary
+-- Shows the death rate for Covid, and the number of cases and deaths by day in Hungary
 SELECT location, date, total_cases, total_deaths, population, (total_deaths/total_cases)*100 AS 'Death_percentage'
 From project_portfolio.covid_deaths
 Where location like 'Hungary'
 ORDER BY 1,2 ;
 
--- Looking at Total Cases vs Population
--- Shows what percentage of population got infected with Covid
+-- Shows what percentage of population got infected with Covid by day in Hungary
 SELECT location, date, total_deaths, total_cases, population, (total_cases/population)*100 AS 'Infected_percentage'
 From project_portfolio.covid_deaths
 Where location like 'Hungary'
 Order BY 1,2;
 
--- Looking at Countries with the highest infection rate compared to population
+-- Shows the highest infection count and the population for each country, ordered by the highest infection rate experienced
 SELECT location, max(total_cases) as Highest_Infection_Count, population, max((total_cases/population))*100 AS 'Max_Infected_percentage'
 From project_portfolio.covid_deaths
 GROUP BY Location, Population
 ORDER BY 4 DESC, 1,2;
 
--- Looking at Countries with the highest average death rate
+-- Shows the average death rate for each country in decreasing order
 SELECT location, AVG((total_deaths/total_cases)*100) AS 'Average_Death_percentage'
 From project_portfolio.covid_deaths
 GROUP BY location
