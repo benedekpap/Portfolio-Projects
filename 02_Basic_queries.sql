@@ -29,29 +29,21 @@ From project_portfolio.covid_deaths
 GROUP BY location
 ORDER BY 2 DESC;
 
--- Looking at Countries with the highest death count per population
-SELECT location, population, max(total_deaths) AS 'Total_deaths_max', max(total_deaths)/max(Population)*100 as 'Total_deaths_per_pop_Perc'
-From project_portfolio.covid_deaths
-Where continent is NULL AND location not like '%income%'
--- Where continent is not NULL
-GROUP BY location, population
-ORDER BY 4 DESC;
-
--- Checking non country data types
+-- Checking what kind of non-country data types are available in the table (e.g. continent, income)
 SELECT continent, location
 From project_portfolio.covid_deaths
 Where continent is NULL
 GROUP BY location, continent
 ORDER BY 1,2;
 
--- Showing the continents with the highest death count
+-- Shows the highest death count per population for each country in decreasing order, and also the total number of deaths and the population
 SELECT location, population, max(total_deaths) AS 'Total_deaths_max', max(total_deaths)/max(Population)*100 as 'Total_deaths_per_pop_Perc'
 From project_portfolio.covid_deaths
 Where continent is NULL AND location not like '%income%'
 GROUP BY location, population
-ORDER BY 3 DESC;
+ORDER BY 4 DESC;
 
--- Showing the continents with the highest death percentage
+-- Shows the continents by their death rate in decreasing order
 SELECT location, max(total_deaths)/max(total_cases)*100 as 'Total_death_percentage'
 FROM project_portfolio.covid_deaths
 Where continent is NULL AND location not like '%income%'
@@ -69,3 +61,17 @@ FROM project_portfolio.covid_vaccinations as cov
 WHERE cov.continent is not NULL
 GROUP BY cov.location
 ORDER BY 4 DESC;
+
+-- Showing the countries with the largest rate of extreme poverty and their number of tests per population
+SELECT cov.location, max(cov.extreme_poverty), max(cov.total_tests)/max(cov.population) as 'tests_per_pop'
+FROM project_portfolio.covid_vaccinations as cov
+WHERE continent is not NULL
+GROUP by cov.location
+ORDER BY 2 DESC;
+
+-- Showing the cardiovascular death rate and hospital beds per thousand people in each country, ordered by their life expectancy
+SELECT cov.location, max(cov.cardiovasc_death_rate), max(cov.life_expectancy), max(cov.hospital_beds_per_thousand)
+FROM project_portfolio.covid_vaccinations as cov
+WHERE continent is not NULL
+GROUP by cov.location
+ORDER BY 2 DESC;
