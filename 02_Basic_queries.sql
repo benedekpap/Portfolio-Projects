@@ -1,3 +1,4 @@
+-- Covid_Deaths database
 
 -- Basic data check
 SELECT location, date, total_cases, new_cases, total_deaths, population
@@ -57,3 +58,15 @@ FROM project_portfolio.covid_deaths
 Where continent is NULL AND location not like '%income%'
 GROUP BY location
 ORDER BY 2 DESC; 
+
+
+-- Covid_vaccinations database
+
+
+-- Showing the number of total tests, and fully vaccinated people in each country, in order of their above 65 years old population
+SELECT cov.location, sum(cov.new_tests) as 'Total_tests', max(cov.people_fully_vaccinated) as 'People_fully_vaccinated', 
+max(cov.aged_65_older) as 'Above_65_population' 
+FROM project_portfolio.covid_vaccinations as cov
+WHERE cov.continent is not NULL
+GROUP BY cov.location
+ORDER BY 4 DESC;
