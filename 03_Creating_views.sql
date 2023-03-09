@@ -68,4 +68,4 @@ JOIN project_portfolio.covid_vaccinations as vac
 Where dea.continent is not NULL 
 GROUP BY dea.location
 ORDER BY 2 DESC
-LIMIT 11;
+LIMIT 10;
